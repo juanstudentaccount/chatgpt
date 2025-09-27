@@ -1,1 +1,1 @@
-chat gpt updated project charger: https://juanstudentaccount.github.io/chatgpt/
+chat gpt updated project charter: https://juanstudentaccount.github.io/chatgpt/
