@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Project Charter for The Role of Artificial Intelligence in Cybersecurity</title>
+  <style>
+    /* ===== Modern, professional, minimalist theme ===== */
+    :root{
+      --bg: #0b1020;                /* page background */
+      --card: #0f152b;              /* surfaces */
+      --muted: #1d2543;             /* outlines */
+      --ink: #e7eaf7;               /* primary text */
+      --ink-dim: #b9bfd7;           /* secondary text */
+      --brand: #5b8cff;             /* accents */
+      --brand-2:#8ae6ff;            /* subtle accents */
+      --shadow: 0 12px 40px rgba(0,0,0,.35);
+      --radius: 14px;
+    }
+    *, *::before, *::after{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0; font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial; color:var(--ink); background: radial-gradient(1200px 700px at 10% -10%, #1a2347 0%, transparent 55%), radial-gradient(900px 600px at 100% 0%, #12204a 0%, transparent 55%), var(--bg);}
+
+    /* Page shell */
+    .page{display:grid; grid-template-columns: 1fr; gap:18px; max-width:1200px; margin:0 auto; padding:20px;}
+
+    /* ===== Sidebar nav ===== */
+    .sidebar{position:sticky; top:12px; height:calc(100dvh - 24px); display:grid; grid-template-rows:auto auto 1fr auto; gap:10px; background: linear-gradient(180deg, rgba(91,140,255,.12), rgba(91,140,255,0)); border:1px solid var(--muted); border-radius:var(--radius); box-shadow:var(--shadow); padding:12px; overflow:hidden}
+    .brand{display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:12px; color:var(--ink); font-weight:700; letter-spacing:.2px}
+    .brand .dot{width:10px; height:10px; border-radius:999px; background:conic-gradient(from 160deg, var(--brand), var(--brand-2)); box-shadow:0 0 12px var(--brand)}
+    .nav-title{margin:12px 10px 8px; font-size:12px; text-transform:uppercase; letter-spacing:.12em; color:var(--ink-dim)}
+    .nav{list-style:none; margin:0; padding:0; overflow:auto}
+    .nav a{display:block; padding:10px 12px; margin:6px 6px; border-radius:10px; color:var(--ink); text-decoration:none; border:1px solid transparent}
+    .nav a:hover{background:rgba(91,140,255,.08); border-color:var(--muted)}
+    .nav a.active{background:rgba(91,140,255,.18); border-color: rgba(138,230,255,.25); box-shadow:0 0 0 1px rgba(91,140,255,.15) inset}
+
+    .sidebar .controls{display:grid; grid-template-columns: 1fr 1fr; gap:8px; padding:0; margin:0}
+.sidebar .controls .chip{width:100%}
+@media (max-width: 1200px){ .sidebar .controls{grid-template-columns:1fr} }
+    .chip{flex:1; text-align:center; padding:8px 10px; background: rgba(91,140,255,.1); border:1px solid var(--muted); color:var(--ink); border-radius:999px; cursor:pointer; user-select:none}
+    .chip:hover{background: rgba(91,140,255,.18)}
+
+    /* ===== Main content card ===== */
+    .container{background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.00)); border:1px solid var(--muted); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden}
+
+    .header{position:relative; isolation:isolate; padding:36px 28px; background: radial-gradient(700px 300px at 10% 0%, rgba(91,140,255,.25), transparent 60%), linear-gradient(135deg, #1a2c74 0%, #1e3aa5 60%, #3d63ff 100%); color:#fff}
+    .header h1{margin:0 0 6px; font-size:28px}
+    .header p{margin:0; opacity:.9}
+
+    .content{padding:26px}
+
+    /* Student info */
+    .student-info{background: linear-gradient(180deg, rgba(138,230,255,.06), rgba(138,230,255,0)); border:1px solid var(--muted); border-radius:12px; padding:16px; margin-bottom:24px}
+    .grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:12px}
+    .label{font-weight:600; color:var(--brand-2); font-size:13px}
+    .value{border:1px solid var(--muted); border-radius:10px; padding:10px; background:rgba(10,14,30,.6)}
+
+    /* Collapsible sections (keeps content exactly the same inside) */
+    details.section{margin:0 0 18px; border:1px solid var(--muted); border-radius:12px; background:rgba(10,14,30,.5)}
+    details.section[open]{background:rgba(10,14,30,.65)}
+    summary{list-style:none; cursor:pointer; display:flex; align-items:center; gap:10px; padding:14px 16px; border-bottom:1px solid var(--muted); position:relative}
+    summary::-webkit-details-marker{display:none}
+    summary h2{margin:0; font-size:18px; color:#cfe2ff}
+    .chev{margin-left:auto; transition:transform .25s ease}
+    details[open] .chev{transform:rotate(180deg)}
+
+    .body{padding:18px}
+
+    /* Tables & lists */
+    table{width:100%; border-collapse:collapse; border:1px solid var(--muted); border-radius:10px; overflow:hidden}
+    caption{caption-side:top; text-align:left; padding:6px 0; font-weight:600; color:var(--brand-2)}
+    th,td{padding:12px 14px; border-bottom:1px solid var(--muted); text-align:left}
+    th{background:#1e2a58; color:#fff}
+    tr:hover{background:rgba(91,140,255,.06)}
+
+    .section .body h3{margin-top:8px; color:#cfe2ff}
+    .section .body ul{margin:10px 0 0 20px; padding:0; list-style:disc}
+    .section .body ul li::marker{color:var(--brand)}
+
+    .subbox{border:1px dashed var(--muted); border-radius:10px; padding:16px; margin:12px 0 20px; background:rgba(10,14,30,.4)}
+    .subbox-title{margin:0 0 10px; font-size:15px; color:var(--brand-2); font-weight:700; text-align:center}
+
+    /* Power–Interest grid (kept content) */
+    .chart-wrap{position:relative; margin-top:6px; padding-left:64px; padding-bottom:42px; display:flex; justify-content:center; align-items:center; flex-direction:column}
+    .chart-border{border:2px solid #445; border-radius:10px; padding:20px; background:rgba(6,10,25,.9)}
+    .grid-2x2{display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:12px}
+    .quadrant{border:2px solid; border-radius:8px; padding:10px}
+    .quadrant h4{margin:0}
+    .quadrant small{font-weight:400}
+    .q-satisfied{border-color:#16a34a; background:#0a2016}
+    .q-satisfied h4{color:#86efac}
+    .q-manage{border-color:#dc2626; background:#2a0e0e}
+    .q-manage h4{color:#fca5a5}
+    .q-monitor{border-color:#f59e0b; background:#2a1d07}
+    .q-monitor h4{color:#fdba74}
+    .q-informed{border-color:#7c3aed; background:#211233}
+    .q-informed h4{color:#d8b4fe}
+    .axis-power{position:absolute; left:10px; top:50%; transform:translateY(-50%) rotate(-90deg); font-weight:700}
+    .axis-interest{position:absolute; left:50%; bottom:8px; transform:translateX(-50%); font-weight:700}
+
+    footer{text-align:center; padding:18px; font-size:13px; color:var(--ink-dim)}
+
+    /* Scroll progress */
+    .progress{position:fixed; inset:0 0 auto 0; height:3px; background:linear-gradient(90deg, var(--brand), var(--brand-2)); transform-origin:0 50%; transform:scaleX(0); z-index:9999}
+
+    /* Print */
+    @media print{
+      .page{grid-template-columns:1fr; padding:0}
+      .sidebar{display:none}
+      body{background:#fff}
+      .container{border:none; box-shadow:none}
+    }
+
+    /* Mobile */
+    @media (max-width: 900px){
+      .page{grid-template-columns:1fr}
+      .sidebar{position:static; height:auto}
+    }
+      /* ===== Enhancements ===== */
+    .search{width:100%; margin:6px 8px 8px; padding:8px 10px; border-radius:999px; border:1px solid var(--muted); background:rgba(10,14,30,.45); color:var(--ink); font-size:13px; height:36px}
+    .search::placeholder{color:var(--ink-dim)}
+
+    /* Visited/completed markers */
+    .nav a.done::after{content:"✓"; margin-left:8px; font-weight:700; opacity:.9}
+
+    /* Back to top */
+    .to-top{position:fixed; right:18px; bottom:18px; padding:10px 14px; border-radius:999px; border:1px solid var(--muted); background:rgba(10,14,30,.6); color:var(--ink); box-shadow:var(--shadow); cursor:pointer; opacity:0; pointer-events:none; transition:opacity .25s ease; z-index:10000}
+    .to-top.show{opacity:1; pointer-events:auto}
+
+    /* Category chips in tables */
+    .tag{display:inline-block; padding:.15rem .5rem; border-radius:999px; font-size:.8rem; border:1px solid var(--muted)}
+    .tag.internal{background:#0b2a1d; color:#a7f3d0}
+    .tag.external{background:#1d2031; color:#c7d2fe}
+    .tag.regulatory{background:#2a0e0e; color:#fecaca}
+
+    /* Light theme */
+    body.light{--bg:#fbfbfd; --card:#ffffff; --muted:#e3e6f0; --ink:#0e1330; --ink-dim:#5b6280; --brand:#365cff; --brand-2:#00a2c7;}
+    body.light .header{color:#fff}
+    body.light .student-info .value{background:#fff}
+
+    /* Tooltip style for glossary */
+    abbr[title]{text-decoration:underline dotted; cursor:help}
+
+    /* Animated details */
+    details.section .body{overflow:hidden}
+      /* ===== Final Polish Enhancements ===== */
+    /* Sidebar collapse */
+    body.sidebar-collapsed .page{grid-template-columns:72px 1fr}
+    body.sidebar-collapsed .sidebar{padding:10px}
+    body.sidebar-collapsed .sidebar .brand{justify-content:center}
+    body.sidebar-collapsed .nav a{white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+    body.sidebar-collapsed .nav a::after{display:none}
+    body.sidebar-collapsed .nav-title,
+    body.sidebar-collapsed #search,
+    body.sidebar-collapsed .controls .label-text{display:none}
+
+    /* Row progress controls */
+    .row-progress{display:flex; align-items:center; gap:8px; margin-top:8px; font-size:12px; color:var(--ink-dim)}
+    .row-progress input[type="range"]{width:160px}
+    .pbar{position:relative; height:6px; background:rgba(91,140,255,.15); border-radius:999px; overflow:hidden; flex:1}
+    .pbar > i{position:absolute; inset:0; transform:scaleX(0); transform-origin:left; background:linear-gradient(90deg, var(--brand), var(--brand-2));}
+
+    /* Timeline */
+    .timeline{position:relative; border:1px solid var(--muted); border-radius:12px; padding:18px; background:rgba(10,14,30,.5)}
+    .timeline .axis{height:4px; border-radius:999px; background:rgba(91,140,255,.25); margin:18px 0; position:relative}
+    .timeline .milestone{position:absolute; top:50%; transform:translate(-50%, -50%); display:flex; flex-direction:column; align-items:center}
+    .timeline .dot{width:12px; height:12px; border-radius:999px; background:var(--brand); box-shadow:0 0 0 3px rgba(91,140,255,.25)}
+    .timeline .label{margin-top:6px; font-size:12px; text-align:center; max-width:160px}
+
+    /* Budget collapsible groups */
+    .row-group-header{cursor:pointer}
+    .row-group-header:hover{background:rgba(91,140,255,.08)}
+    .hidden-row{display:none}
+  /* Top controls (no sidebar) */
+    .top-controls{display:flex; gap:8px; padding:12px 16px; border-bottom:1px solid var(--muted); background:rgba(255,255,255,.02); align-items:center; flex-wrap:wrap}
+    .top-controls .spacer{flex:1}
+    .top-controls .chip{padding:8px 12px}
+  </style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <div class="page">
+    <!-- Sidebar removed by request -->
+
+    <!-- ===== Main Card ===== -->
+    <main class="container">
+      <div class="header">
+        <h1>The Role of Artificial Intelligence in Cybersecurity</h1>
+        <p>Project Charter | CIS 4860-01 | Fall 2025</p>
+      </div>
+
+      <div class="top-controls">
+        <button class="chip" id="themeToggle" type="button" title="Toggle light/dark">Theme</button>
+        <div class="spacer"></div>
+        <button class="chip" id="expandAll" type="button" title="Expand all sections">Expand all</button>
+        <button class="chip" id="collapseAll" type="button" title="Collapse all sections">Collapse all</button>
+        <button class="chip" id="toTopBtn" type="button" title="Back to top">Top</button>
+      </div>
+
+      <div class="content">
+        <!-- Student Info (content unchanged) -->
+        <div class="student-info">
+          <div class="grid">
+            <div>
+              <div class="label">Student Name</div>
+              <div class="value">Juan Talome</div>
+            </div>
+            <div>
+              <div class="label">Course</div>
+              <div class="value">Managing Information Systems Projects (CIS 4860-01)</div>
+            </div>
+            <div>
+              <div class="label">Semester</div>
+              <div class="value">Fall 2025</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1. Project Title and Description -->
+        <details class="section" open id="s1">
+          <summary>
+            <h2>1. Project Title and Description</h2>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </summary>
+          <div class="body">
+            <p><strong>Title:</strong> The Role of Artificial Intelligence in Cybersecurity</p>
+            <div class="description-box">
+              <p>
+                The project I chose is to write a research paper on the role of Artificial Intelligence in cybersecurity. 
+                This research paper will focus on new emerging AI technologies and how they are being implemented 
+                in tools and cybersecurity practices.
+              </p>
+            </div>
+          </div>
+        </details>
+
+        <!-- 2. Vision, Mission and Strategy -->
+        <details class="section" id="s2">
+          <summary>
+            <h2>2. Vision, Mission and Strategy</h2>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </summary>
+          <div class="body">
+            <p><strong>Vision:</strong> Develop a clear and well researched paper that explains how artificial intelligence is being applied in cybersecurity and what value it provides.</p>
+            <p><strong>Mission:</strong> Gather and review reliable academic and industry sources to understand how emerging AI technologies are being used in cybersecurity tools and practices.</p>
+            <p><strong>Strategy:</strong> Build an annotated bibliography, analyze key findings from the sources, and use that analysis to write a structured research paper supported with evidence.</p>
+          </div>
+        </details>
+
+        <!-- 3. Business Case -->
+        <details class="section" id="s3">
+          <summary>
+            <h2>3. Business Case</h2>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </summary>
+          <div class="body">
+            <p>This project will help me grow professionally by strengthening my research and analysis skills in the high demand area of cybersecurity. I will learn how to evaluate academic and industry sources, compare different AI tools and practices, and communicate findings clearly in both written and presentation formats. These skills will help me in future classes, internships, and job opportunities in cybersecurity.</p>
+            <p>On a personal level this project will deepen my understanding of a topic I am passionate about. Exploring how AI is changing cybersecurity will give me confidence to discuss current trends and show initiative in an area that is connected to my career goals.</p>
+          </div>
+        </details>
+
+        <!-- 4. High Level Scope -->
+        <details class="section" id="s4">
+          <summary>
+            <h2>4. High Level Scope</h2>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </summary>
+          <div class="body">
+            <h3>In Scope for Semester Long Project</h3>
+            <ul>
+              <li>Literature review report on AI in cybersecurity.</li>
+              <li>Annotated bibliography of selected sources.</li>
+              <li>Final research paper with findings and a conclusion.</li>
+              <li>Summary report analyzing emerging AI technologies in cybersecurity.</li>
+              <li>Presentation slides summarizing key research outcomes.</li>
+            </ul>
+
+            <h3>Roadmap Items up to 6 Months After Semester Ends</h3>
+            <ul>
+              <li>Update research paper with new information on emerging AI and cybersecurity sources.</li>
+              <li>Expand literature review to include additional peer reviewed journals and industry papers.</li>
+              <li>Develop a visual dashboard to present adoption trends in AI cybersecurity.</li>
+              <li>Submit my research paper to a student journal.</li>
+            </ul>
+
+            <h3>Truly Out of Scope</h3>
+            <ul>
+              <li>Develop or code a fully functional AI cybersecurity system.</li>
+              <li>Perform real life tests with industry wide AI cybersecurity tools.</li>
+              <li>Provide hands on cybersecurity services using AI tools.</li>
+              <li>Conduct long term yearly studies on AI adoption trends in cybersecurity.</li>
+            </ul>
+          </div>
+        </details>
+
+        <!-- 5. Stakeholder Register -->
+        <details class="section" id="s5">
+          <summary>
+            <h2>5. Stakeholder Register</h2>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </summary>
+          <div class="body">
+            <div class="subbox">
+              <div class="subbox-title">Stakeholder Table</div>
+              <table aria-describedby="stakeholder-desc">
+                <caption id="stakeholder-desc">Key stakeholders, their roles, and engagement strategies.</caption>
+                <thead>
+                  <tr>
+                    <th>Stakeholder</th>
+                    <th>Category</th>
+                    <th>Role or Interest</th>
+                    <th>Power</th>
+                    <th>Interest</th>
+                    <th>Engagement Strategy</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Professor</td>
+                    <td>Internal</td>
+                    <td>Guides deliverables and evaluates work</td>
+                    <td>High</td>
+                    <td>High</td>
+                    <td>Maintain good communication and ask for feedback.</td>
+                  </tr>
+                  <tr>
+                    <td>National Institute of Standards and Technology (NIST)</td>
+                    <td>Regulatory</td>
+                    <td>Ensures best practices, compliance, and trustworthiness of AI driven cybersecurity.</td>
+                    <td>High</td>
+                    <td>Low</td>
+                    <td>Show alignment to NIST standards in my conclusions to ensure credibility.</td>
+                  </tr>
+                  <tr>
+                    <td>Classmates</td>
+                    <td>Internal</td>
+                    <td>Peer review and presentation audience</td>
+                    <td>Low</td>
+                    <td>High</td>
+                    <td>Keep informed with periodic updates and requests for feedback</td>
+                  </tr>
+                  <tr>
+                    <td>University Library and Research Database</td>
+                    <td>Internal</td>
+                    <td>Provides access to academic and industry sources</td>
+                    <td>Low</td>
+                    <td>High</td>
+                    <td>Access quality research and consult librarians as needed</td>
+                  </tr>
+                  <tr>
+                    <td>Cybersecurity Industry Professionals</td>
+                    <td>External</td>
+                    <td>Optional insights on current practices and trends</td>
+                    <td>Low</td>
+                    <td>High</td>
+                    <td>Occasional outreach for short input when relevant</td>
+                  </tr>
+                  <tr>
+                    <td>AI Technology Vendors</td>
+                    <td>External</td>
+                    <td>Background on tooling capabilities and limitations</td>
+                    <td>Low</td>
+                    <td>Low</td>
+                    <td>Monitor public documentation and industry papers</td>
+                  </tr>
+                  <tr>
+                    <td>Future Employers</td>
+                    <td>External</td>
+                    <td>Potential consumers of research outcomes, shows applied knowledge</td>
+                    <td>Low</td>
+                    <td>High</td>
+                    <td>Highlight project on LinkedIn, discuss during career networking events.</td>
+                  </tr>
+                  <tr>
+                    <td>General Public</td>
+                    <td>External</td>
+                    <td>Potential benefits by advancements in AI security</td>
+                    <td>Low</td>
+                    <td>High</td>
+                    <td>Make sure the final paper has a clear message so the audience can benefit from my research</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="subbox">
+              <div class="subbox-title">Power Interest Grid Visualization</div>
+              <div class="chart-wrap">
+                <div class="axis-power">POWER &rarr;</div>
+                <div class="axis-interest">INTEREST &rarr;</div>
+                <div class="chart-border">
+                  <div class="grid-2x2">
+                    <div class="quadrant q-satisfied">
+                      <h4>Keep Satisfied<br><small>High Power, Low Interest</small></h4>
+                      <ul>
+                        <li>National Institute of Standards and Technology (NIST) </li>
+                      </ul>
+                    </div>
+                    <div class="quadrant q-manage">
+                      <h4>Manage Closely<br><small>High Power, High Interest</small></h4>
+                      <ul>
+                        <li>Professor</li>
+                      </ul>
+                    </div>
+                    <div class="quadrant q-monitor">
+                      <h4>Monitor<br><small>Low Power, Low Interest</small></h4>
+                      <ul>
+                        <li>AI Technology Vendors</li>
+                      </ul>
+                    </div>
+                    <div class="quadrant q-informed">
+                      <h4>Keep Informed<br><small>Low Power, High Interest</small></h4>
+                      <ul>
+                        <li>Classmates</li>
+                        <li>University Library and Research Database</li>
+                        <li>Cybersecurity Industry Professionals</li>
+                        <li>Future Employers</li>
+                        <li>General Public</li>
+                      </ul>
+                    </div>
+                  </div><!-- /grid-2x2 -->
+                </div><!-- /chart-border -->
+              </div><!-- /chart-wrap -->
+            </div><!-- /subbox -->
+          </div>
+        </details>
+
+        <!-- Project Methodology Explanation -->
+        <details class="section" id="s6">
+          <summary>
+            <h2>Project Methodology Explanation</h2>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </summary>
+          <div class="body">
+            <p>
+              For my methodology I chose <strong>hybrid interactive</strong> for my project. One reason I chose this method is because the structure and deadlines are fixed. This is beneficial for me because it keeps my work paced at a steady rate, which improves quality and prevents rushing everything at the end.
+            </p>
+            <p>
+              Another reason this methodology helps is the lower risk of misalignment with project requirements—regular feedback sessions make sure my work stays clear and aligned with the rubric. Finally, this approach is well balanced and includes everything I need to produce quality work: the schedule is not too fast-paced, but it is consistent.
+            </p>
+          </div>
+        </details>
+
+        <!-- Project Methodology Diagram -->
+        <details class="section" id="s7">
+          <summary>
+            <h2>Project Methodology Diagram</h2>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </summary>
+          <div class="body" style="text-align:center">
+            <figure style="margin:0">
+              <img 
+                src="images/Blank diagram.png" 
+                alt="Hybrid iterative project methodology showing phased releases with feedback loops and decision points"
+                style="max-width:100%; height:auto; border:1px solid #2a3568; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,.25);"
+              />
+              <figcaption style="margin-top:8px; color:var(--ink-dim); font-size:14px;">
+                Hybrid–Iterative plan with 3 releases, feedback after each, and go/no-go decision points.
+              </figcaption>
+            </figure>
+          </div>
+        </details>
+
+        <!-- Project Tool Selection Explanation -->
+        <details class="section" id="s8">
+          <summary>
+            <h2>Project Tool Selection Explanation</h2>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </summary>
+          <div class="body">
+            <p>
+              <strong>Choose Your Tool.</strong> After reviewing Asana, Trello, and Microsoft Project, I have decided to use <strong>Trello</strong> for my project management tool because it best fits my needs and supports the structure of this project. Trello is easy to work with and provides features that help me visually map my <strong>hybrid methodology</strong>.
+            </p>
+            <p>
+              Trello is also free, and I have used it on previous projects, so the learning curve is minimal. Microsoft Project was another strong option, but its more complex features are beyond what I need right now. I also reviewed Asana and liked that it’s free, but since I have more experience with Trello, I chose it as my primary tool and would consider Asana as a second option.
+            </p>
+
+            <div class="subbox">
+              <div class="subbox-title">Key Trello Features for This Project</div>
+              <ul>
+                <li><strong>Card Templates</strong> – quickly create repeatable task structures for releases and phases.</li>
+                <li><strong>Checklists</strong> – break down deliverables (e.g., bibliography items, draft sections) into actionable steps.</li>
+                <li><strong>Calendar View</strong> – map fixed dates for hybrid iterations and deadlines to stay on pace.</li>
+              </ul>
+              <p style="margin-top:8px; color:#b3bbda; font-size:14px;">
+                <em>Tags:</em> Trello layout · Project methodology · Hybrid
+              </p>
+            </div>
+
+            <div class="subbox">
+              <div class="subbox-title">Screenshot of Project in Tool</div>
+              <figure style="margin:0; text-align:center;">
+                <img 
+                  src="images/unknown.png" 
+                  alt="Screenshot of Trello board showing lists and cards aligned to the hybrid methodology"
+                  style="max-width:100%; height:auto; border:1px solid #2a3568; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,.25);"
+                />
+                <figcaption style="margin-top:8px; color:var(--ink-dim); font-size:14px;">
+                  Trello board mapped to phases, releases, and feedback checkpoints.
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+        </details>
+
+        <!-- 6. Deliverables (Definition of Done, tasks, dependencies, estimates) -->
+        <details class="section" id="s9">
+          <summary>
+            <h2>6. Deliverables (Definition of Done, tasks, dependencies, estimates)</h2>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </summary>
+          <div class="body">
+            <table>
+              <thead>
+                <tr>
+                  <th>Deliverable</th>
+                  <th>Type</th>
+                  <th>SMART Description</th>
+                  <th>Definition of Done</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Annotated Bibliography</td>
+                  <td>Tangible</td>
+                  <td>Compile 12 to 15 sources, including at least 8 peer reviewed articles. Follow APA format. Complete by September 30.</td>
+                  <td>
+                    <ul>
+                      <li>12–15 sources</li>
+                      <li>8 peer reviewed sources</li>
+                      <li>Follows APA format</li>
+                      <li>Completed by September 30</li>
+                    </ul>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Literature Review Report</td>
+                  <td>Tangible</td>
+                  <td>Write a 2,500 to 3,000 word report that organizes findings. Include 10 citations and follows APA format. Complete by October 21.</td>
+                  <td>
+                    <ul>
+                      <li>Report is 1,500 to 2,000 Words</li>
+                      <li>At least 10 citations</li>
+                      <li>Organized sections</li>
+                      <li>Follows APA format</li>
+                    </ul>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Final Research Paper</td>
+                  <td>Tangible</td>
+                  <td>Develop a 3,000 to 3,500 word final paper that integrates previous work and follows NIST guidelines. Complete by December 2.</td>
+                  <td>
+                    <ul>
+                      <li>Paper length 3000 to 3500 words</li>
+                      <li>Integrates all work properly</li>
+                      <li>Aligned with NIST and APA formatting</li>
+                      <li>Completed by December 2</li>
+                    </ul>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Summary Report on Emerging AI Technologies in Cybersecurity</td>
+                  <td>Tangible</td>
+                  <td>Create a 2 to 3 page executive summary covering 5 emerging AI tools in cybersecurity plus analysis. Complete by November 4.</td>
+                  <td>
+                    <ul>
+                      <li>Describe 5 AI tools with benefits and risks</li>
+                      <li>2–3 page summary</li>
+                      <li>Created analysis</li>
+                      <li>Completed by November 4</li>
+                    </ul>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Presentation Slides</td>
+                  <td>Tangible</td>
+                  <td>Prepare 10 to 12 slides that summarize the research. Each slide will have 30 words while including visuals. Completed by December 9.</td>
+                  <td>
+                    <ul>
+                      <li>10 to 12 slides</li>
+                      <li>Each slide has 30 words</li>
+                      <li>Include visuals</li>
+                      <li>Completed by December 9</li>
+                    </ul>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </details>
+
+        <!-- 7. Budget Estimation -->
+        <details class="section" id="s10">
+          <summary>
+            <h2>7. Budget Estimation</h2>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </summary>
+          <div class="body">
+            <table>
+              <thead>
+                <tr>
+                  <th>Cost Item</th>
+                  <th>Quantity/Hours</th>
+                  <th>Rate/Price</th>
+                  <th>Total Cost</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>LABOR COSTS</strong></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>Developer</td><td>70</td><td>$44.08</td><td>$3,085.60</td><td>Enter hours needed</td></tr>
+<tr><td>Designer</td><td>4</td><td>$29.34</td><td>$117.36</td><td>Enter hours needed</td></tr>
+<tr><td>Project Manager</td><td>6</td><td>$45.43</td><td>$272.58</td><td>Enter hours needed</td></tr>
+<tr><td>Tester</td><td>6</td><td>$40.00</td><td>$240.00</td><td>Enter hours needed</td></tr>
+<tr><td>Business Analyst</td><td>4</td><td>$40.98</td><td>$163.92</td><td>Enter hours needed if needed</td></tr>
+<tr><td>Other Role</td><td>0</td><td>$0.00</td><td>$0.00</td><td>Add additional roles as needed</td></tr>
+<tr><td><em>LABOR SUBTOTAL</em></td><td></td><td></td><td><strong>$3,879.46</strong></td><td></td></tr>
+<tr><td><strong>EQUIPMENT/SOFTWARE</strong></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>Software Licenses</td><td>1</td><td>$0.00</td><td>$0.00</td><td>Monthly/annual cost</td></tr>
+<tr><td>Development Tools</td><td>1</td><td>$0.00</td><td>$0.00</td><td>IDEs and frameworks</td></tr>
+<tr><td>Testing Environment</td><td>1</td><td>$0.00</td><td>$0.00</td><td>Servers or cloud instances</td></tr>
+<tr><td>Database Software</td><td>0</td><td>$0.00</td><td>$0.00</td><td>If needed for project</td></tr>
+<tr><td>Other Equipment</td><td>1</td><td>$0.00</td><td>$0.00</td><td>Add as needed</td></tr>
+<tr><td><em>EQUIPMENT/SOFTWARE SUBTOTAL</em></td><td></td><td></td><td><strong>$0.00</strong></td><td></td></tr>
+<tr><td><strong>MATERIALS</strong></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>Stock Images/Media</td><td>5</td><td>$0.00</td><td>$0.00</td><td>Graphics and multimedia</td></tr>
+<tr><td>Training Materials</td><td>0</td><td>$0.00</td><td>$0.00</td><td>User guides and documentation</td></tr>
+<tr><td>Documentation Assets</td><td>0</td><td>$0.00</td><td>$0.00</td><td>Templates and resources</td></tr>
+<tr><td>Other Materials</td><td>0</td><td>$0.00</td><td>$0.00</td><td>Add as needed</td></tr>
+<tr><td><em>MATERIALS SUBTOTAL</em></td><td></td><td></td><td><strong>$0.00</strong></td><td></td></tr>
+<tr><td><strong>SERVICES</strong></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>Cloud Hosting</td><td>0</td><td>$0.00</td><td>$0.00</td><td>Monthly hosting costs</td></tr>
+<tr><td>Third-party APIs</td><td>0</td><td>$0.00</td><td>$0.00</td><td>Payment processing etc.</td></tr>
+<tr><td>Consulting Services</td><td>1</td><td>$0.00</td><td>$0.00</td><td>External expertise</td></tr>
+<tr><td>Security Audit</td><td>0</td><td>$0.00</td><td>$0.00</td><td>Security assessments</td></tr>
+<tr><td>Other Services</td><td>0</td><td>$0.00</td><td>$0.00</td><td>Add as needed</td></tr>
+<tr><td><em>SERVICES SUBTOTAL</em></td><td></td><td></td><td><strong>$0.00</strong></td><td></td></tr>
+                <tr><td colspan="5" style="background:#0e1430;"></td></tr>
+                <tr><td><strong>SUBTOTAL DIRECT COSTS</strong></td><td></td><td></td><td class="mono"><strong>$3,879.46</strong></td><td>Sum of all categories</td></tr>
+                <tr><td><strong>Contingency Reserve (%)</strong></td><td class="mono">20%</td><td></td><td class="mono"><strong>$775.89</strong></td><td>Adjust percentage as needed</td></tr>
+                <tr><td><strong>TOTAL PROJECT BUDGET</strong></td><td></td><td></td><td class="mono"><strong>$4,655.35</strong></td><td>Final budget amount</td></tr>
+              </tbody>
+            </table>
+
+            <div class="subbox" style="margin-top:16px;">
+              <div class="subbox-title">Budget Breakdown</div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Category</th><th>Percent of Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Labor</td><td class="mono">83.3333691%</td></tr>
+                  <tr><td>Equipment/Software</td><td class="mono">0%</td></tr>
+                  <tr><td>Materials</td><td class="mono">0%</td></tr>
+                  <tr><td>Services</td><td class="mono">0%</td></tr>
+                  <tr><td>Contingency</td><td class="mono">16.6666309%</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </details>
+
+        <footer>
+          Draft Project • Juan Talome • CIS 4860-01 • Fall 2025
+        </footer>
+      </div>
+    </main>
+  </div>
+
+  <button id=\"toTop\" class=\"to-top\" type=\"button\" aria-label=\"Back to top\">Top</button>
+<script>
+/* Consolidated script (no sidebar) */
+const sections = Array.from(document.querySelectorAll('details.section'));
+
+// Expand/Collapse all
+document.getElementById('expandAll')?.addEventListener('click',()=>sections.forEach(s=>s.open=true));
+document.getElementById('collapseAll')?.addEventListener('click',()=>sections.forEach(s=>s.open=false));
+
+// Scroll progress + top
+const progress = document.getElementById('progress');
+const toTop = document.getElementById('toTop');
+const toTopBtn = document.getElementById('toTopBtn');
+const onScroll = ()=>{
+  const h = document.documentElement;
+  const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight);
+  if (progress) progress.style.transform = `scaleX(${Math.max(0, Math.min(1, scrolled))})`;
+  if (h.scrollTop > 600) toTop?.classList.add('show'); else toTop?.classList.remove('show');
+};
+document.addEventListener('scroll', onScroll, {passive:true}); onScroll();
+[toTopBtn, toTop].forEach(btn=>btn?.addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'})));
+
+// Theme toggle
+const applyTheme = (t)=> document.body.classList.toggle('light', t==='light');
+const stored = localStorage.getItem('theme'); if (stored) applyTheme(stored);
+document.getElementById('themeToggle')?.addEventListener('click', ()=>{
+  const t = document.body.classList.contains('light') ? 'dark' : 'light';
+  applyTheme(t); localStorage.setItem('theme', t);
+});
+
+// Animated details
+const animate = (el, open)=>{
+  const body = el.querySelector('.body'); if (!body) return;
+  body.style.height = open ? '0px' : body.scrollHeight + 'px';
+  requestAnimationFrame(()=>{ body.style.transition = 'height .28s ease'; body.style.height = open ? body.scrollHeight + 'px' : '0px'; });
+  const done = ()=>{ body.style.removeProperty('height'); body.style.removeProperty('transition'); el.removeEventListener('transitionend', done); };
+  body.addEventListener('transitionend', done);
+};
+sections.forEach(sec=>sec.addEventListener('toggle', ()=> animate(sec, sec.open)));
+
+// Stakeholder tags
+(()=>{
+  const table = document.querySelector('#s5 table'); if (!table) return;
+  const rows = Array.from(table.tBodies[0].rows);
+  rows.forEach(tr=>{
+    const catCell = tr.cells?.[1]; if (!catCell) return;
+    const txt = (catCell.textContent||'').toLowerCase();
+    let cls = '';
+    if (txt.includes('internal')) cls = 'internal';
+    else if (txt.includes('regulatory')) cls = 'regulatory';
+    else if (txt.includes('external')) cls = 'external';
+    if (cls){ catCell.innerHTML = `<span class=\"tag ${cls}\">${catCell.textContent.trim()}</span>`; }
+  });
+})();
+
+// Deliverable progress sliders
+(()=>{
+  const tbl = document.querySelector('#s9 table'); if (!tbl) return;
+  Array.from(tbl.tBodies[0].rows).forEach(tr=>{
+    if (!tr.querySelector('td ul')) return;
+    const lastCell = tr.lastElementChild;
+    const wrap = document.createElement('div');
+    wrap.className = 'row-progress';
+    wrap.innerHTML = '<span>Progress</span><input type=\"range\" min=\"0\" max=\"100\" value=\"0\" aria-label=\"Progress\"><div class=\"pbar\"><i></i></div><span class=\"pct\">0%</span>';
+    const range = wrap.querySelector('input');
+    const bar = wrap.querySelector('.pbar i');
+    const pct = wrap.querySelector('.pct');
+    range.addEventListener('input', ()=>{ bar.style.transform = `scaleX(${range.value/100})`; pct.textContent = `${range.value}%`; });
+    lastCell.appendChild(wrap);
+  });
+})();
+
+// Deliverables Timeline (auto from dates)
+(()=>{
+  const sec = document.getElementById('s9'); if (!sec) return;
+  const tbl = sec.querySelector('table'); if (!tbl) return;
+  const parseDate = (txt)=>{
+    const m = /(Complete(?:d)?\s+by)\s+([A-Za-z]+\s+\d{1,2})/i.exec(txt) || /(by)\s+([A-Za-z]+\s+\d{1,2})/i.exec(txt);
+    if (!m) return null; const d = new Date(`${m[2]}, 2025`); return isNaN(d) ? null : d;
+  };
+  const items = [];
+  Array.from(tbl.tBodies[0].rows).forEach(tr=>{
+    const name = tr.cells?.[0]?.textContent?.trim();
+    const dd   = tr.cells?.[3]?.innerText || '';
+    const d    = parseDate(dd) || parseDate(tr.cells?.[2]?.innerText||'');
+    if (name && d) items.push({name, date:d});
+  });
+  if (!items.length) return;
+  items.sort((a,b)=>a.date-b.date);
+  const start = items[0].date, end = items[items.length-1].date;
+  const span  = end - start || 1;
+
+  const detailsEl = document.createElement('details');
+  detailsEl.className = 'section'; detailsEl.id = 's9a'; detailsEl.open = true;
+  detailsEl.innerHTML = '<summary><h2>Deliverables Timeline</h2><svg class=\"chev\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg></summary><div class=\"body\"><div class=\"timeline\"><div class=\"axis\"></div></div></div>';
+  sec.insertAdjacentElement('afterend', detailsEl);
+
+  const axis = detailsEl.querySelector('.timeline .axis');
+  items.forEach(it=>{
+    const pct = ((it.date - start)/span)*100;
+    const m = document.createElement('div'); m.className = 'milestone'; m.style.left = pct + '%';
+    const d = document.createElement('div'); d.className = 'dot';
+    const lbl = document.createElement('div'); lbl.className = 'label';
+    lbl.textContent = `${it.name} – ${it.date.toLocaleDateString(undefined,{month:'short', day:'numeric'})}`;
+    m.appendChild(d); m.appendChild(lbl); axis.appendChild(m);
+  });
+})();
+
+// Collapsible budget categories
+(()=>{
+  const tbl = document.querySelector('#s10 table'); if (!tbl) return;
+  const rows = Array.from(tbl.tBodies[0].rows);
+  let group = null;
+  rows.forEach((tr)=>{
+    const first = tr.cells[0]; const txt = (first?.textContent||'').trim();
+    if (/^(LABOR COSTS|EQUIPMENT\/SOFTWARE|MATERIALS|SERVICES)$/i.test(txt)){
+      tr.classList.add('row-group-header');
+      tr.dataset.group = txt; group = txt; return;
+    }
+    if (/SUBTOTAL/i.test(txt)) { group = null; return; }
+    if (group){ tr.dataset.group = group; tr.classList.add('hidden-row'); }
+  });
+  tbl.addEventListener('click', (e)=>{
+    const tr = e.target.closest('.row-group-header'); if (!tr) return;
+    const g = tr.dataset.group;
+    rows.forEach(r=>{ if (r.dataset.group===g && !/row-group-header/.test(r.className)) r.classList.toggle('hidden-row'); });
+  });
+})();
+
+// Glossary section at end
+(()=>{
+  const container = document.querySelector('main .content'); if (!container) return;
+  if (document.getElementById('sGloss')) return;
+  const sec = document.createElement('details'); sec.className='section'; sec.id='sGloss';
+  sec.innerHTML = '<summary><h2>Glossary</h2><svg class=\"chev\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg></summary><div class=\"body\"><ul><li><strong>NIST</strong> – National Institute of Standards and Technology; provides widely used security frameworks and AI risk guidance.</li><li><strong>Hybrid–Iterative</strong> – Method combining fixed phases with iterative feedback loops.</li></ul></div>';
+  const footer = document.querySelector('footer');
+  if (footer && footer.parentElement) footer.parentElement.insertBefore(sec, footer);
+})();
+</script>
+</body>
+</html>
